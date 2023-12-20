@@ -1,0 +1,26 @@
+import { Hub } from "aws-amplify/utils";
+import { signInWithRedirect, getCurrentUser } from "aws-amplify/auth";
+
+Hub.listen("auth", async ({ payload }) => {
+  switch (payload.event) {
+    case "signInWithRedirect":
+      const user = await getCurrentUser();
+      console.log(user.username);
+      break;
+    case "signInWithRedirect_failure":
+      // handle sign in failure
+      break;
+    case "customOAuthState":
+      const state = payload.data; // this will be customState provided on signInWithRedirect function
+      console.log(state);
+      break;
+  }
+});
+
+function handleSignInClick() {
+  signInWithRedirect({
+    provider: "Google"
+  });
+}
+
+export default { handleSignInClick }
